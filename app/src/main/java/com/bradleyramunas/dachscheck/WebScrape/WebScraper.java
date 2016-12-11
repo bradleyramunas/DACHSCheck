@@ -16,6 +16,8 @@ import java.util.ArrayList;
  * Created by Bradley on 12/10/2016.
  */
 
+//This class is basically only for use when threading/asynch tasks are not needed. Otherwise... DO NOT USE
+
 public class WebScraper {
     public static ArrayList<Teacher> grabAllTeachers() {
         ArrayList<Teacher> teachers = new ArrayList<>();

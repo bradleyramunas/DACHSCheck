@@ -1,8 +1,11 @@
 package com.bradleyramunas.dachscheck.WebScrape;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.bradleyramunas.dachscheck.MainActivity;
 import com.bradleyramunas.dachscheck.Types.Teacher;
 
 import org.jsoup.Jsoup;
@@ -17,11 +20,21 @@ import java.util.ArrayList;
  */
 
 public class GrabTeachers extends AsyncTask<Void, Integer, ArrayList<Teacher>>{
+
+    private Context context;
+    public GrabTeachers(Context context){
+        super();
+        this.context = context;
+
+    }
+
     @Override
     protected ArrayList<Teacher> doInBackground(Void... voids) {
         ArrayList<Teacher> teachers = new ArrayList<>();
         try{
-            Document document = Jsoup.connect("http://www.doralacademyprep.org/apps/staff/").get();
+            Document document = Jsoup.connect("http://www.doralacademyprep.org/apps/staff/")
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36")
+                    .get();
             Element teacherDiv = document.select(".staff-category").get(1);
             Elements teacherData = teacherDiv.select("li");
             for(Element e : teacherData){
@@ -39,11 +52,15 @@ public class GrabTeachers extends AsyncTask<Void, Integer, ArrayList<Teacher>>{
 
     @Override
     protected void onProgressUpdate(Integer... values) {
+        if(values[0] == 1){
+            Toast.makeText(context, "Completed", Toast.LENGTH_LONG).show();
+        }
         super.onProgressUpdate(values);
     }
 
     @Override
     protected void onPostExecute(ArrayList<Teacher> teachers) {
+
         super.onPostExecute(teachers);
     }
 }
