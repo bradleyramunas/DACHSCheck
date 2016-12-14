@@ -1,5 +1,6 @@
 package com.bradleyramunas.dachscheck.WebScrape;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -18,11 +19,20 @@ import java.util.ArrayList;
  */
 
 public class GrabPeriods extends AsyncTask<Teacher, Integer, ArrayList<Period>>{
+
+
+    Context context;
+    public GrabPeriods(Context context){
+        this.context = context;
+    }
+
     @Override
     protected ArrayList<Period> doInBackground(Teacher... teachers) {
         ArrayList<Period> periods = new ArrayList<>();
         try{
-            Document document = Jsoup.connect(teachers[0].getUrl()).get();
+            Document document = Jsoup.connect(teachers[0].getUrl())
+                    .userAgent("Chrome")
+                    .get();
             Elements elements = document.select("#pageContentWrapper").select("a");
             for(Element e : elements){
                 String url = e.attr("href");

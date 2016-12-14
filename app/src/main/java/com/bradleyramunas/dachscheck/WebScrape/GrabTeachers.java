@@ -52,15 +52,13 @@ public class GrabTeachers extends AsyncTask<Void, Integer, ArrayList<Teacher>>{
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if(values[0] == 1){
-            Toast.makeText(context, "Completed", Toast.LENGTH_LONG).show();
-        }
+
         super.onProgressUpdate(values);
     }
 
     @Override
     protected void onPostExecute(ArrayList<Teacher> teachers) {
-
+        //Toast.makeText(context, "Grabbed teacher list successfully", Toast.LENGTH_LONG).show();
         super.onPostExecute(teachers);
     }
 }

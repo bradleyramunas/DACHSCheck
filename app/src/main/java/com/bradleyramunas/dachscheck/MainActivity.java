@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.toolbar) Toolbar toolbar;
+
     private Drawer drawer = null;
 
 
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -43,13 +44,11 @@ public class MainActivity extends AppCompatActivity {
                 .withAccountHeader(header)
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(true)
+                .withActionBarDrawerToggleAnimated(true)
                 .build();
         try{
             ArrayList<Teacher> data = new GrabTeachers(this).execute().get();
-            for(Teacher s : data){
-                Log.d("DATA", s.getName());
 
-            }
         } catch (Exception e){
             Log.e("DATAFETCHERROR", e.getMessage());
         }
@@ -76,5 +75,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(drawer.isDrawerOpen()){
+            drawer.closeDrawer();
+        }else{
+            super.onBackPressed();
+        }
+
     }
 }
