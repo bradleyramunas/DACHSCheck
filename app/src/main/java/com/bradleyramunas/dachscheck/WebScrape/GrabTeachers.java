@@ -33,7 +33,7 @@ public class GrabTeachers extends AsyncTask<Void, Integer, ArrayList<Teacher>>{
         ArrayList<Teacher> teachers = new ArrayList<>();
         try{
             Document document = Jsoup.connect("http://www.doralacademyprep.org/apps/staff/")
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36")
+                    .userAgent("Chrome")
                     .get();
             Element teacherDiv = document.select(".staff-category").get(1);
             Elements teacherData = teacherDiv.select("li");

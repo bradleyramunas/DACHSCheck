@@ -5,15 +5,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bradleyramunas.dachscheck.Types.Teacher;
 import com.bradleyramunas.dachscheck.WebScrape.GrabTeachers;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +44,15 @@ public class MainActivity extends AppCompatActivity {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(true)
                 .build();
-        new GrabTeachers(this).execute();
+        try{
+            ArrayList<Teacher> data = new GrabTeachers(this).execute().get();
+            for(Teacher s : data){
+                Log.d("DATA", s.getName());
+
+            }
+        } catch (Exception e){
+            Log.e("DATAFETCHERROR", e.getMessage());
+        }
 
     }
 
