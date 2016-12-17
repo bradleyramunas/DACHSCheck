@@ -10,12 +10,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bradleyramunas.dachscheck.Types.Period;
 import com.bradleyramunas.dachscheck.Types.Teacher;
+import com.bradleyramunas.dachscheck.WebScrape.GrabPeriods;
 import com.bradleyramunas.dachscheck.WebScrape.GrabTeachers;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.ArrayList;
 
@@ -45,9 +49,33 @@ public class MainActivity extends AppCompatActivity {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        return false;
+                    }
+                })
                 .build();
         try{
             ArrayList<Teacher> data = new GrabTeachers(this).execute().get();
+            for(final Teacher t : data){
+                drawer.addItem(new PrimaryDrawerItem().withName(t.getName().replace("&amp;", "&")).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem){
+                        try{
+                            ArrayList<Period> test = new GrabPeriods(getApplicationContext()).execute(t).get();
+                            for(Period p : test){
+                                Log.d("TEST", p.getName());
+                            }
+                        }catch (Exception e){
+                            Log.e("DATAFETCHERERROR", "Failed to access teacher");
+                            Log.e("DATAFETCHERROR", e.getMessage());
+                        }
+                        return true;
+
+                    }
+                }));
+            }
 
         } catch (Exception e){
             Log.e("DATAFETCHERROR", e.getMessage());

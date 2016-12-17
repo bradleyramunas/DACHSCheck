@@ -7,4 +7,12 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/set_check"
+        android:orderInCategory="1"
+        android:title="Set Check Time"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_alarm_white_24dp"
+        />
 </menu>
