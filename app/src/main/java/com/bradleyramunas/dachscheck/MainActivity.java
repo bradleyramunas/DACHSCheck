@@ -1,5 +1,6 @@
 package com.bradleyramunas.dachscheck;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Types.Period;
 import com.bradleyramunas.dachscheck.Types.Teacher;
 import com.bradleyramunas.dachscheck.WebScrape.GrabPeriods;
@@ -37,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences sp = this.getSharedPreferences(getString(R.string.app_data_key), this.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        boolean firstStart = sp.getBoolean("firstRun", false);
+        if(!firstStart){
+            editor.putBoolean("firstRun", true);
+            DBConnect db = new DBConnect(this);
+            db.onFirstRun();
+        }
+
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
@@ -49,37 +61,31 @@ public class MainActivity extends AppCompatActivity {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        return false;
-                    }
-                })
                 .build();
-        try{
-            ArrayList<Teacher> data = new GrabTeachers(this).execute().get();
-            for(final Teacher t : data){
-                drawer.addItem(new PrimaryDrawerItem().withName(t.getName().replace("&amp;", "&")).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem){
-                        try{
-                            ArrayList<Period> test = new GrabPeriods(getApplicationContext()).execute(t).get();
-                            for(Period p : test){
-                                Log.d("TEST", p.getName());
-                            }
-                        }catch (Exception e){
-                            Log.e("DATAFETCHERERROR", "Failed to access teacher");
-                            Log.e("DATAFETCHERROR", e.getMessage());
-                        }
-                        return true;
-
-                    }
-                }));
-            }
-
-        } catch (Exception e){
-            Log.e("DATAFETCHERROR", e.getMessage());
-        }
+//        try{
+//            ArrayList<Teacher> data = new GrabTeachers(this).execute().get();
+//            for(final Teacher t : data){
+//                drawer.addItem(new PrimaryDrawerItem().withName(t.getName().replace("&amp;", "&")).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+//                    @Override
+//                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem){
+//                        try{
+//                            ArrayList<Period> test = new GrabPeriods(getApplicationContext()).execute(t).get();
+//                            for(Period p : test){
+//                                Log.d("TEST", p.getName());
+//                            }
+//                        }catch (Exception e){
+//                            Log.e("DATAFETCHERERROR", "Failed to access teacher");
+//                            Log.e("DATAFETCHERROR", e.getMessage());
+//                        }
+//                        return true;
+//
+//                    }
+//                }));
+//            }
+//
+//        } catch (Exception e){
+//            Log.e("DATAFETCHERROR", e.getMessage());
+//        }
 
     }
 
@@ -100,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.set_check) {
+
         }
 
         return super.onOptionsItemSelected(item);
