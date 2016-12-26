@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DBConnect extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "TEACHERS.db";
     private static final String COLUMN_TEACHER_NAME = "teacherName";
     private static final String COLUMN_COURSE_DESCRIPTION = "courseDescription";
@@ -83,6 +83,24 @@ public class DBConnect extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Teacher> teachers = new ArrayList<>();
         String query = "SELECT * FROM 'TEACHER' WHERE 1";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+            String teacherName = c.getString(c.getColumnIndex(COLUMN_TEACHER_NAME));
+            String courseDesc = c.getString(c.getColumnIndex(COLUMN_COURSE_DESCRIPTION));
+            String courseURL = c.getString(c.getColumnIndex(COLUMN_COURSE_URL));
+            teachers.add(new Teacher(teacherName, courseDesc, courseURL));
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+        return teachers;
+    }
+
+    public ArrayList<Teacher> getTeachers(String search){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Teacher> teachers = new ArrayList<>();
+        String query = "SELECT * FROM 'TEACHER' WHERE teacherName LIKE '%" + search + "%' OR courseDescription LIKE '%" + search + "%'";
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
         while(!c.isAfterLast()){
