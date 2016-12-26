@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Types.Period;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("firstRun", true);
             DBConnect db = new DBConnect(this);
             db.onFirstRun();
+            editor.apply();
         }
 
         AccountHeader header = new AccountHeaderBuilder()
@@ -62,30 +65,29 @@ public class MainActivity extends AppCompatActivity {
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .build();
-//        try{
-//            ArrayList<Teacher> data = new GrabTeachers(this).execute().get();
-//            for(final Teacher t : data){
-//                drawer.addItem(new PrimaryDrawerItem().withName(t.getName().replace("&amp;", "&")).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-//                    @Override
-//                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem){
-//                        try{
-//                            ArrayList<Period> test = new GrabPeriods(getApplicationContext()).execute(t).get();
-//                            for(Period p : test){
-//                                Log.d("TEST", p.getName());
-//                            }
-//                        }catch (Exception e){
-//                            Log.e("DATAFETCHERERROR", "Failed to access teacher");
-//                            Log.e("DATAFETCHERROR", e.getMessage());
-//                        }
-//                        return true;
-//
-//                    }
-//                }));
-//            }
-//
-//        } catch (Exception e){
-//            Log.e("DATAFETCHERROR", e.getMessage());
-//        }
+
+    }
+
+    public void populateDrawer(){
+        DBConnect db = new DBConnect(this);
+        ArrayList<Period> periods = db.getPeriods();
+        for(final Period p : periods){
+            drawer.addItem(new PrimaryDrawerItem().withName(p.getName().replace("&amp;", "&")).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                @Override
+                public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                    //Do something with this period.
+                    Toast.makeText(getApplicationContext(), p.getUrl(), Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            }));
+        }
+        drawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Add Class").withIcon(R.drawable.ic_add_circle_outline_black_24dp).withSelectable(false).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                //Do something
+                return true;
+            }
+        }));
 
     }
 
