@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bradleyramunas.dachscheck.Adapters.TeacherAdapter;
 import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Database.DBHelper;
 import com.bradleyramunas.dachscheck.Types.Teacher;
@@ -35,8 +36,8 @@ public class TeacherSelectActivity extends AppCompatActivity {
 
         DBConnect db = new DBConnect(this);
         ArrayList<Teacher> teachers = db.getTeachers();
-        ArrayAdapter<Teacher> adapter = new ArrayAdapter<Teacher>(this, R.layout.activity_teacher_select_item_1, teachers);
-        listView.setAdapter(adapter);
+        TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers);
+        listView.setAdapter(teacherAdapter);
 
     }
 
@@ -58,6 +59,9 @@ public class TeacherSelectActivity extends AppCompatActivity {
         if(id == R.id.refresh_list){
             DBHelper.updateTeachers(this);
             populateList();
+        }
+        if(id == R.id.search_list){
+
         }
 
         return super.onOptionsItemSelected(item);
