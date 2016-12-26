@@ -1,12 +1,15 @@
 package com.bradleyramunas.dachscheck.Types;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.net.URL;
 
 /**
  * Created by Bradley on 12/10/2016.
  */
 
-public class Period {
+public class Period implements Parcelable {
     private String name;
     private String url;
 
@@ -39,4 +42,33 @@ public class Period {
                 ", url='" + url + '\'' +
                 '}';
     }
+
+    protected Period(Parcel in) {
+        name = in.readString();
+        url = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(url);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Period> CREATOR = new Parcelable.Creator<Period>() {
+        @Override
+        public Period createFromParcel(Parcel in) {
+            return new Period(in);
+        }
+
+        @Override
+        public Period[] newArray(int size) {
+            return new Period[size];
+        }
+    };
 }

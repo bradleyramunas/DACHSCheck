@@ -20,7 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TeacherSelectActivity"></activity>
+        <activity android:name=".TeacherSelectActivity" />
+        <activity android:name=".PeriodSelectActivity"></activity>
     </application>
 
 </manifest>

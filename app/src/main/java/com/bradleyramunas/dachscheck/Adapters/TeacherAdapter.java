@@ -1,12 +1,15 @@
 package com.bradleyramunas.dachscheck.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.bradleyramunas.dachscheck.PeriodSelectActivity;
 import com.bradleyramunas.dachscheck.R;
 import com.bradleyramunas.dachscheck.Types.Teacher;
 
@@ -46,9 +49,16 @@ public class TeacherAdapter extends BaseAdapter{
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         View teacherView = layoutInflater.inflate(R.layout.teacher_select_card, viewGroup, false);
+        final Teacher teacher = (Teacher) getItem(i);
+        teacherView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PeriodSelectActivity.class);
+                ((Activity) context).startActivityForResult(intent, 2);
+            }
+        });
         TextView teacherName = (TextView) teacherView.findViewById(R.id.teacherName);
         TextView teacherDesc = (TextView) teacherView.findViewById(R.id.teacherDescription);
-        Teacher teacher = (Teacher) getItem(i);
         teacherName.setText(teacher.getName());
         teacherDesc.setText(teacher.getCourseDescription());
 
