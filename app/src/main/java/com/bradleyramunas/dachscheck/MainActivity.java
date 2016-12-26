@@ -1,5 +1,6 @@
 package com.bradleyramunas.dachscheck;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -84,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
         drawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Add Class").withIcon(R.drawable.ic_add_circle_outline_black_24dp).withSelectable(false).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                //Do something
+                Intent getNewTeacher = new Intent(getApplicationContext(), TeacherSelectActivity.class);
+                startActivityForResult(getNewTeacher, 1);
                 return true;
             }
         }));
@@ -123,6 +125,16 @@ public class MainActivity extends AppCompatActivity {
             drawer.closeDrawer();
         }else{
             super.onBackPressed();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1){
+
+        }else{
+            super.onActivityResult(requestCode, resultCode, data);
         }
 
     }

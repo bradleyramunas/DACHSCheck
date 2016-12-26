@@ -61,6 +61,17 @@ public class DBConnect extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void addTeachers(ArrayList<Teacher> teachers){
+        SQLiteDatabase db = getWritableDatabase();
+        for(Teacher teacher : teachers){
+            String sql = "INSERT INTO 'TEACHER' (teacherName, courseDescription, courseURL) VALUES (" + teacher.getName() + ", " + teacher.getCourseDescription()
+                    + ", " + teacher.getUrl() + ")";
+            SQLiteStatement statement = db.compileStatement(sql);
+            statement.executeInsert();
+        }
+        db.close();
+    }
+
     public void deleteTeacher(Teacher teacher){
         SQLiteDatabase db = getWritableDatabase();
         String sql = "DELETE FROM 'TEACHER' WHERE " + COLUMN_TEACHER_NAME + "='" + teacher.getName() + "' AND " + COLUMN_COURSE_URL + "='" + teacher.getUrl() +
