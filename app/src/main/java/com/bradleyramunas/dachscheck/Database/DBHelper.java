@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 public class DBHelper {
     public static void updateTeachers(Context context){
         try {
-            ArrayList<Teacher> teachers = new GrabTeachers(context).get();
+            ArrayList<Teacher> teachers = new GrabTeachers(context).execute().get();
             DBConnect db = new DBConnect(context);
             db.addTeachers(teachers);
         } catch (InterruptedException e) {

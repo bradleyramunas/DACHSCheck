@@ -17,7 +17,7 @@ public class Period {
     }
 
     public String getName() {
-        return name;
+        return name.replace("'", "").replace("&amp;", "&");
     }
 
     public void setName(String name) {

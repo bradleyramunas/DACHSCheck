@@ -21,6 +21,7 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/teacher_scroll_view" />
+            android:id="@+id/teacher_list_view" />
     </LinearLayout>
+
 </RelativeLayout>

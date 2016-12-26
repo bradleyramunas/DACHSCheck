@@ -4,6 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -17,25 +21,23 @@ import butterknife.BindView;
 
 public class TeacherSelectActivity extends AppCompatActivity {
 
-    @BindView(R.id.teacher_scroll_view)
-    ScrollView scrollView;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_select);
+        listView = (ListView) findViewById(R.id.teacher_list_view);
         populateList();
     }
 
     public void populateList(){
-        scrollView.removeAllViews();
+
         DBConnect db = new DBConnect(this);
         ArrayList<Teacher> teachers = db.getTeachers();
-        for(Teacher t : teachers){
-            TextView textView = new TextView(this);
-            textView.setText(t.getName() + "\n" + t.getCourseDescription());
-            scrollView.addView(textView);
-        }
+        ArrayAdapter<Teacher> adapter = new ArrayAdapter<Teacher>(this, R.layout.activity_teacher_select_item_1, teachers);
+        listView.setAdapter(adapter);
+
     }
 
     @Override
@@ -54,7 +56,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.refresh_list){
-            DBHelper.updateTeachers(getApplicationContext());
+            DBHelper.updateTeachers(this);
             populateList();
         }
 

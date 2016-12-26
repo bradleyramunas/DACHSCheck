@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = this.getSharedPreferences(getString(R.string.app_data_key), this.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         boolean firstStart = sp.getBoolean("firstRun", false);
-        if(!firstStart){
+        if(true){
             editor.putBoolean("firstRun", true);
             DBConnect db = new DBConnect(this);
             db.onFirstRun();
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
                 .build();
+        populateDrawer();
 
     }
 

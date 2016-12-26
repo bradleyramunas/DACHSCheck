@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DBConnect extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "TEACHERS.db";
     private static final String COLUMN_TEACHER_NAME = "teacherName";
     private static final String COLUMN_COURSE_DESCRIPTION = "courseDescription";
@@ -36,12 +36,9 @@ public class DBConnect extends SQLiteOpenHelper{
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        SQLiteDatabase db = getWritableDatabase();
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS 'TEACHER'");
         db.execSQL("DROP TABLE IF EXISTS 'PERIODS'");
-        db.close();
-        onFirstRun();
     }
 
     public void onFirstRun(){
@@ -49,13 +46,15 @@ public class DBConnect extends SQLiteOpenHelper{
         String sql = "CREATE TABLE IF NOT EXISTS 'TEACHER' (teacherName TEXT, courseDescription TEXT, courseURL TEXT)";
         db.execSQL(sql);
         sql = "CREATE TABLE IF NOT EXISTS 'PERIODS' (periodName TEXT, periodURL TEXT)";
+        db.execSQL(sql);
         db.close();
     }
 
+
     public void addTeacher(Teacher teacher){
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "INSERT INTO 'TEACHER' (teacherName, courseDescription, courseURL) VALUES (" + teacher.getName() + ", " + teacher.getCourseDescription()
-                + ", " + teacher.getUrl() + ")";
+        String sql = "INSERT INTO 'TEACHER' (teacherName, courseDescription, courseURL) VALUES ('" + teacher.getName() + "', '" + teacher.getCourseDescription()
+                + "', '" + teacher.getUrl() + "')";
         SQLiteStatement statement = db.compileStatement(sql);
         statement.executeInsert();
         db.close();
@@ -64,8 +63,8 @@ public class DBConnect extends SQLiteOpenHelper{
     public void addTeachers(ArrayList<Teacher> teachers){
         SQLiteDatabase db = getWritableDatabase();
         for(Teacher teacher : teachers){
-            String sql = "INSERT INTO 'TEACHER' (teacherName, courseDescription, courseURL) VALUES (" + teacher.getName() + ", " + teacher.getCourseDescription()
-                    + ", " + teacher.getUrl() + ")";
+            String sql = "INSERT INTO 'TEACHER' (teacherName, courseDescription, courseURL) VALUES ('" + teacher.getName() + "', '" + teacher.getCourseDescription()
+                    + "', '" + teacher.getUrl() + "')";
             SQLiteStatement statement = db.compileStatement(sql);
             statement.executeInsert();
         }
@@ -100,7 +99,7 @@ public class DBConnect extends SQLiteOpenHelper{
 
     public void addPeriod(Period p){
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "INSERT INTO 'PERIODS' (periodName, periodURL) VALUES (" + p.getName() + ", " + p.getUrl() + ")";
+        String sql = "INSERT INTO 'PERIODS' (periodName, periodURL) VALUES ('" + p.getName() + "', '" + p.getUrl() + "')";
         SQLiteStatement statement = db.compileStatement(sql);
         statement.executeInsert();
         db.close();
@@ -125,6 +124,8 @@ public class DBConnect extends SQLiteOpenHelper{
             periods.add(new Period(periodName, periodURL));
             c.moveToNext();
         }
+        db.close();
         return periods;
+
     }
 }

@@ -13,6 +13,11 @@ public class Teacher {
     private ArrayList<Period> periods;
     private String url;
 
+    @Override
+    public String toString() {
+        return getName() + "\n" + getCourseDescription();
+    }
+
     public Teacher(String name, String courseDescription, String url) {
 
         this.name = name;
@@ -26,7 +31,7 @@ public class Teacher {
     }
 
     public String getName() {
-        return name;
+        return name.replace("'", "").replace("&amp;", "&");
     }
 
     public void setName(String name) {
@@ -34,7 +39,7 @@ public class Teacher {
     }
 
     public String getCourseDescription() {
-        return courseDescription;
+        return courseDescription.replace("'", "").replace("&amp;", "&");
     }
 
     public void setCourseDescription(String courseDescription) {
