@@ -30,7 +30,7 @@ public class GrabPeriods extends AsyncTask<Teacher, Integer, ArrayList<Period>>{
     protected ArrayList<Period> doInBackground(Teacher... teachers) {
         ArrayList<Period> periods = new ArrayList<>();
         try{
-            Document document = Jsoup.connect(teachers[0].getUrl())
+            Document document = Jsoup.connect("http://www.doralacademyprep.org" + teachers[0].getUrl())
                     .userAgent("Chrome")
                     .get();
             Elements elements = document.select("#pageContentWrapper").select("a");

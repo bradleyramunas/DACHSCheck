@@ -3,7 +3,6 @@ package com.bradleyramunas.dachscheck.Types;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.net.URL;
 
 /**
  * Created by Bradley on 12/10/2016.
@@ -16,7 +15,7 @@ public class Period implements Parcelable {
     public Period(String name, String url) {
 
         this.name = name;
-        this.url = "http://www.doralacademyprep.org" + url;
+        this.url = url;
     }
 
     public String getName() {

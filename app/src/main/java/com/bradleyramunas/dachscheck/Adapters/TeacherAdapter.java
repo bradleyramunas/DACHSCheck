@@ -54,6 +54,7 @@ public class TeacherAdapter extends BaseAdapter{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PeriodSelectActivity.class);
+                intent.putExtra("teacher", teacher);
                 ((Activity) context).startActivityForResult(intent, 2);
             }
         });

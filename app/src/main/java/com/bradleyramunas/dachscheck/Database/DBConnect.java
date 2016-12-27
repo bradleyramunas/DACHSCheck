@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DBConnect extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "TEACHERS.db";
     private static final String COLUMN_TEACHER_NAME = "teacherName";
     private static final String COLUMN_COURSE_DESCRIPTION = "courseDescription";

@@ -26,7 +26,7 @@ public class Teacher implements Parcelable {
         this.name = name;
         this.courseDescription = courseDescription;
         this.periods = new ArrayList<>();
-        this.url = "http://www.doralacademyprep.org" + url;
+        this.url = url;
     }
 
     public void addPeriod(Period p){
