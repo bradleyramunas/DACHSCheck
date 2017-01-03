@@ -54,38 +54,38 @@ public class PeriodSelectActivity extends AppCompatActivity {
     }
 
     public void populateList(){
-        try {
-            ArrayList<Period> periods = new GrabPeriods(this).execute(teacher).get();
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0,0,0,20);
-            if(periods.isEmpty()){
-                TextView message = new TextView(this);
-                message.setText("No periods found");
-                message.setLayoutParams(layoutParams);
-                contentHolder.addView(message);
-            }else{
-                for(final Period p : periods){
-                    if(p.getUrl().contains("/classes/")){
-                        TextView link = new TextView(this);
-                        link.setText(p.getName());
-                        link.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Uri address = Uri.parse("http://www.doralacademyprep.org" + p.getUrl());
-                                Intent browser = new Intent(Intent.ACTION_VIEW, address);
-                                startActivity(browser);
-                            }
-                        });
-                        link.setLayoutParams(layoutParams);
-                        contentHolder.addView(link);
-                    }
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            ArrayList<Period> periods = new GrabPeriods(this).execute(teacher).get();
+//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            layoutParams.setMargins(0,0,0,20);
+//            if(periods.isEmpty()){
+//                TextView message = new TextView(this);
+//                message.setText("No periods found");
+//                message.setLayoutParams(layoutParams);
+//                contentHolder.addView(message);
+//            }else{
+//                for(final Period p : periods){
+//                    if(p.getUrl().contains("/classes/")){
+//                        TextView link = new TextView(this);
+//                        link.setText(p.getName());
+//                        link.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Uri address = Uri.parse("http://www.doralacademyprep.org" + p.getUrl());
+//                                Intent browser = new Intent(Intent.ACTION_VIEW, address);
+//                                startActivity(browser);
+//                            }
+//                        });
+//                        link.setLayoutParams(layoutParams);
+//                        contentHolder.addView(link);
+//                    }
+//                }
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

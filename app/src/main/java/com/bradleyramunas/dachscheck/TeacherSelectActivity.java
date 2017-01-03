@@ -1,9 +1,11 @@
 package com.bradleyramunas.dachscheck;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,17 +22,18 @@ import com.bradleyramunas.dachscheck.Adapters.TeacherAdapter;
 import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Database.DBHelper;
 import com.bradleyramunas.dachscheck.Types.Teacher;
+import com.bradleyramunas.dachscheck.WebScrape.GrabPeriods;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import butterknife.BindView;
 
 public class TeacherSelectActivity extends AppCompatActivity {
 
-    ListView listView;
-    ArrayList<Teacher> teachers;
-    boolean isInSearch = false;
+    public ListView listView;
+    public ArrayList<Teacher> teachers;
+    public boolean isInSearch = false;
+    public RelativeLayout relativeLayout;
+    public Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +41,16 @@ public class TeacherSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_select);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Select a teacher");
+        context = this;
         listView = (ListView) findViewById(R.id.teacher_list_view);
+        relativeLayout = (RelativeLayout) findViewById(R.id.activity_teacher_select);
         populateList();
     }
 
     public void populateList(){
         DBConnect db = new DBConnect(this);
         teachers = db.getTeachers();
-        TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers);
+        TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers, relativeLayout);
         listView.setAdapter(teacherAdapter);
 
     }
@@ -53,7 +59,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
         DBConnect db = new DBConnect(this);
         ArrayList<Teacher> teachers = db.getTeachers(search);
         if(!teachers.isEmpty()){
-            TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers);
+            TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers, relativeLayout);
             listView.setAdapter(teacherAdapter);
             isInSearch = true;
         }else{
@@ -65,7 +71,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(isInSearch){
             isInSearch = false;
-            TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers);
+            TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers, relativeLayout);
             listView.setAdapter(teacherAdapter);
         }else{
             super.onBackPressed();
@@ -82,16 +88,12 @@ public class TeacherSelectActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if(id == android.R.id.home){
             onBackPressed();
         }
 
-        //noinspection SimplifiableIfStatement
         if(id == R.id.refresh_list){
             DBHelper.updateTeachers(this);
             populateList();

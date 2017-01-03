@@ -3,15 +3,18 @@ package com.bradleyramunas.dachscheck.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bradleyramunas.dachscheck.PeriodSelectActivity;
 import com.bradleyramunas.dachscheck.R;
 import com.bradleyramunas.dachscheck.Types.Teacher;
+import com.bradleyramunas.dachscheck.WebScrape.GrabPeriods;
 
 import java.util.ArrayList;
 
@@ -21,13 +24,16 @@ import java.util.ArrayList;
 
 public class TeacherAdapter extends BaseAdapter{
 
-    private Context context;
+    public Context context;
+    public RelativeLayout relativeLayout;
     private LayoutInflater layoutInflater;
     private ArrayList<Teacher> teachers;
 
-    public TeacherAdapter(Context context, ArrayList<Teacher> teachers) {
+
+    public TeacherAdapter(Context context, ArrayList<Teacher> teachers, RelativeLayout relativeLayout) {
         this.context = context;
         this.teachers = teachers;
+        this.relativeLayout = relativeLayout;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -53,9 +59,8 @@ public class TeacherAdapter extends BaseAdapter{
         teacherView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, PeriodSelectActivity.class);
-                intent.putExtra("teacher", teacher);
-                ((Activity) context).startActivityForResult(intent, 2);
+                Log.e("CAN", "YOU SEE ME");
+                new GrabPeriods(context, relativeLayout).execute(teacher);
             }
         });
         TextView teacherName = (TextView) teacherView.findViewById(R.id.teacherName);
