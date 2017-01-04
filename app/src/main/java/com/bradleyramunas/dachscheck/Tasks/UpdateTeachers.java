@@ -30,8 +30,9 @@ public class UpdateTeachers extends AsyncTask<Void, Void, ArrayList<Teacher>>{
 
     @Override
     protected void onPreExecute() {
-        //TeacherSelectActivity weakReferencedActivity = (TeacherSelectActivity) weakReference.get();
-        //weakReferencedActivity.startProgressBar();
+        TeacherSelectActivity weakReferencedActivity = (TeacherSelectActivity) weakReference.get();
+        weakReferencedActivity.startProgressBar();
+
         super.onPreExecute();
     }
 
@@ -39,6 +40,15 @@ public class UpdateTeachers extends AsyncTask<Void, Void, ArrayList<Teacher>>{
         this.context = context;
         weakReference = new WeakReference<Activity>(activity);
 
+    }
+
+    @Override
+    protected void onCancelled() {
+        TeacherSelectActivity weakReferencedActivity = (TeacherSelectActivity) weakReference.get();
+        weakReferencedActivity.endProgressBar();
+        weakReferencedActivity.populateList(weakReferencedActivity.teachers);
+        Toast.makeText(context, "Could not connect to Doral Academy\nCheck your internet connection.", Toast.LENGTH_LONG).show();
+        super.onCancelled();
     }
 
     @Override
@@ -65,7 +75,9 @@ public class UpdateTeachers extends AsyncTask<Void, Void, ArrayList<Teacher>>{
             }
         }catch (Exception e){
             Log.e("JSOUP", "Error retrieving teacher list. Check if website is down.");
-            Log.e("JSOUP", e.getMessage());
+            Log.e("JSOUP", ""+e.getMessage());
+            this.cancel(true);
+            return null;
         }
         return teachers;
     }
@@ -74,8 +86,9 @@ public class UpdateTeachers extends AsyncTask<Void, Void, ArrayList<Teacher>>{
     protected void onPostExecute(ArrayList<Teacher> teachers) {
         dbConnect.refreshTable(teachers);
         TeacherSelectActivity weakReferencedActivity = (TeacherSelectActivity) weakReference.get();
-        //weakReferencedActivity.endProgressBar();
+        weakReferencedActivity.endProgressBar();
         weakReferencedActivity.populateList(teachers);
+        Toast.makeText(context, "Teacher list updated.", Toast.LENGTH_LONG).show();
         super.onPostExecute(teachers);
     }
 

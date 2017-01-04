@@ -208,7 +208,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
     }
 
     public void endProgressBar(){
-        progressBar.setProgress(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
 

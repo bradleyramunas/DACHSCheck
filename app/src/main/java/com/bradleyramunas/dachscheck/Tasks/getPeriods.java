@@ -3,6 +3,7 @@ package com.bradleyramunas.dachscheck.Tasks;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.bradleyramunas.dachscheck.TeacherSelectActivity;
 import com.bradleyramunas.dachscheck.Types.Period;
@@ -28,6 +29,16 @@ public class GetPeriods extends AsyncTask<Teacher, Integer, ArrayList<Period>>{
     }
 
     @Override
+    protected void onCancelled() {
+        TeacherSelectActivity weakReferencedActivity = (TeacherSelectActivity) weakReference.get();
+        weakReferencedActivity.endProgressBar();
+        weakReferencedActivity.populateList(weakReferencedActivity.teachers);
+        Toast.makeText(weakReferencedActivity, "Could not connect to Doral Academy\nCheck your internet connection.", Toast.LENGTH_LONG).show();
+        weakReferencedActivity.isInPeriod = false;
+        super.onCancelled();
+    }
+
+    @Override
     protected ArrayList<Period> doInBackground(Teacher... teachers) {
         ArrayList<Period> periods = new ArrayList<>();
         try{
@@ -49,7 +60,9 @@ public class GetPeriods extends AsyncTask<Teacher, Integer, ArrayList<Period>>{
             for(StackTraceElement x : e.getStackTrace()){
                 Log.e("STACKTRACE", x.toString());
             }
-            Log.e("JSOUP", e.getMessage());
+            Log.e("JSOUP", ""+e.getMessage());
+            this.cancel(true);
+            return null;
         }
         return periods;
 
