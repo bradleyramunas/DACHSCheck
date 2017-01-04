@@ -50,6 +50,14 @@ public class DBConnect extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void refreshTable(ArrayList<Teacher> teachers){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS 'TEACHER'");
+        db.execSQL("CREATE TABLE IF NOT EXISTS 'TEACHER' (teacherName TEXT, courseDescription TEXT, courseURL TEXT)");
+        db.close();
+        addTeachers(teachers);
+    }
+
 
     public void addTeacher(Teacher teacher){
         SQLiteDatabase db = getWritableDatabase();

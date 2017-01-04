@@ -20,8 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bradleyramunas.dachscheck.Database.DBConnect;
-import com.bradleyramunas.dachscheck.Database.DBHelper;
 import com.bradleyramunas.dachscheck.Tasks.GetPeriods;
+import com.bradleyramunas.dachscheck.Tasks.UpdateTeachers;
 import com.bradleyramunas.dachscheck.Types.Period;
 import com.bradleyramunas.dachscheck.Types.Teacher;
 
@@ -169,8 +169,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
         }
 
         if(id == R.id.refresh_list && !isInPeriod){
-            DBHelper.updateTeachers(this);
-            populateList(teachers);
+            new UpdateTeachers(this, this).execute();
         }
         if(id == R.id.search_list && !isInPeriod){
             AlertDialog.Builder build = new AlertDialog.Builder(this);
@@ -207,5 +206,10 @@ public class TeacherSelectActivity extends AppCompatActivity {
         actionBar.setTitle("Select a class period");
         populateListPeriods(periods);
     }
+
+    public void endProgressBar(){
+        progressBar.setProgress(View.GONE);
+    }
+
 
 }
