@@ -21,7 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".TeacherSelectActivity" />
-        <activity android:name=".PeriodSelectActivity" />
     </application>
 
 </manifest>

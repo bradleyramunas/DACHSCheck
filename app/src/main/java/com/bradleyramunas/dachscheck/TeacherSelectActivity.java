@@ -3,11 +3,12 @@ package com.bradleyramunas.dachscheck;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bradleyramunas.dachscheck.Adapters.TeacherAdapter;
 import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Database.DBHelper;
 import com.bradleyramunas.dachscheck.Tasks.GetPeriods;
@@ -26,7 +26,6 @@ import com.bradleyramunas.dachscheck.Types.Period;
 import com.bradleyramunas.dachscheck.Types.Teacher;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TeacherSelectActivity extends AppCompatActivity {
 
@@ -37,13 +36,15 @@ public class TeacherSelectActivity extends AppCompatActivity {
     public ArrayList<Teacher> teachers;
     public LayoutInflater layoutInflater;
     final public Activity activity = this;
+    public ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_select);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Select a teacher");
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Select a teacher");
         listView = (ListView) findViewById(R.id.teacher_list_view);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         DBConnect db = new DBConnect(this);
@@ -52,6 +53,12 @@ public class TeacherSelectActivity extends AppCompatActivity {
         populateList(teachers);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_teacher, menu);
+        return true;
+    }
 
     public void populateList(final ArrayList<Teacher> teacherList){
         listView.setAdapter(new BaseAdapter() {
@@ -132,6 +139,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
         if(isInPeriod){
             isInPeriod = false;
             populateList(teachers);
+            actionBar.setTitle("Select a teacher");
         }else if(isInSearch){
             isInSearch = false;
             populateList(teachers);
@@ -160,11 +168,11 @@ public class TeacherSelectActivity extends AppCompatActivity {
             onBackPressed();
         }
 
-        if(id == R.id.refresh_list){
+        if(id == R.id.refresh_list && !isInPeriod){
             DBHelper.updateTeachers(this);
             populateList(teachers);
         }
-        if(id == R.id.search_list){
+        if(id == R.id.search_list && !isInPeriod){
             AlertDialog.Builder build = new AlertDialog.Builder(this);
             build.setMessage("Enter search term");
             build.setCancelable(true);
@@ -196,6 +204,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
 
     public void endProgressBar(ArrayList<Period> periods){
         progressBar.setVisibility(View.GONE);
+        actionBar.setTitle("Select a class period");
         populateListPeriods(periods);
     }
 

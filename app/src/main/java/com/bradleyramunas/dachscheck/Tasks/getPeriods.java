@@ -36,9 +36,12 @@ public class GetPeriods extends AsyncTask<Teacher, Integer, ArrayList<Period>>{
                     .get();
             Elements elements = document.select("#pageContentWrapper").select("a");
             for(Element e : elements){
+
                 String url = e.attr("href");
                 String name = e.html();
-                periods.add(new Period(name, url));
+                if(url.contains("classes")){
+                    periods.add(new Period(name, url));
+                }
             }
 
         }catch (Exception e){
