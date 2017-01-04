@@ -1,39 +1,42 @@
 package com.bradleyramunas.dachscheck;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bradleyramunas.dachscheck.Adapters.TeacherAdapter;
 import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Database.DBHelper;
+import com.bradleyramunas.dachscheck.Tasks.GetPeriods;
+import com.bradleyramunas.dachscheck.Types.Period;
 import com.bradleyramunas.dachscheck.Types.Teacher;
-import com.bradleyramunas.dachscheck.WebScrape.GrabPeriods;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class TeacherSelectActivity extends AppCompatActivity {
 
     public ListView listView;
-    public ArrayList<Teacher> teachers;
+    public ProgressBar progressBar;
     public boolean isInSearch = false;
-    public RelativeLayout relativeLayout;
-    public Context context;
+    public boolean isInPeriod = false;
+    public ArrayList<Teacher> teachers;
+    public LayoutInflater layoutInflater;
+    final public Activity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,49 +44,112 @@ public class TeacherSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_select);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Select a teacher");
-        context = this;
         listView = (ListView) findViewById(R.id.teacher_list_view);
-        relativeLayout = (RelativeLayout) findViewById(R.id.activity_teacher_select);
-        populateList();
-    }
-
-    public void populateList(){
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         DBConnect db = new DBConnect(this);
         teachers = db.getTeachers();
-        TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers, relativeLayout);
-        listView.setAdapter(teacherAdapter);
-
+        layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        populateList(teachers);
     }
 
-    public void searchList(String search){
-        DBConnect db = new DBConnect(this);
-        ArrayList<Teacher> teachers = db.getTeachers(search);
-        if(!teachers.isEmpty()){
-            TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers, relativeLayout);
-            listView.setAdapter(teacherAdapter);
-            isInSearch = true;
-        }else{
-            Toast.makeText(this, "No Results Found", Toast.LENGTH_LONG).show();
-        }
+
+    public void populateList(final ArrayList<Teacher> teacherList){
+        listView.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return teacherList.size();
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return teacherList.get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+                final Teacher item = (Teacher) getItem(i);
+                View cardView = layoutInflater.inflate(R.layout.teacher_select_card, viewGroup, false);
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        isInPeriod = true;
+                        new GetPeriods(activity).execute(item);
+                    }
+                });
+                TextView teacherName = (TextView) cardView.findViewById(R.id.teacherName);
+                TextView teacherDesc = (TextView) cardView.findViewById(R.id.teacherDescription);
+                teacherName.setText(item.getName());
+                teacherDesc.setText(item.getCourseDescription());
+                return cardView;
+            }
+        });
+    }
+
+    public void populateListPeriods(final ArrayList<Period> periods){
+        listView.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return periods.size();
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return periods.get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+                final Period item = (Period) getItem(i);
+                View cardView = layoutInflater.inflate(R.layout.teacher_select_card, viewGroup, false);
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        activity.setResult(1);
+                        activity.finish();
+                    }
+                });
+                TextView teacherName = (TextView) cardView.findViewById(R.id.teacherName);
+                TextView teacherDesc = (TextView) cardView.findViewById(R.id.teacherDescription);
+                teacherName.setText(item.getName());
+                teacherDesc.setText(item.getUrl());
+                return cardView;
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
-        if(isInSearch){
+        if(isInPeriod){
+            isInPeriod = false;
+            populateList(teachers);
+        }else if(isInSearch){
             isInSearch = false;
-            TeacherAdapter teacherAdapter = new TeacherAdapter(this, teachers, relativeLayout);
-            listView.setAdapter(teacherAdapter);
+            populateList(teachers);
         }else{
             super.onBackPressed();
         }
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_teacher, menu);
-        return true;
+    public void searchList(final String search){
+        DBConnect db = new DBConnect(this);
+        final ArrayList<Teacher> searchTeachers = db.getTeachers(search);
+        if(!teachers.isEmpty()){
+            populateList(searchTeachers);
+            isInSearch = true;
+        }else{
+            Toast.makeText(this, "No Results Found", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -96,7 +162,7 @@ public class TeacherSelectActivity extends AppCompatActivity {
 
         if(id == R.id.refresh_list){
             DBHelper.updateTeachers(this);
-            populateList();
+            populateList(teachers);
         }
         if(id == R.id.search_list){
             AlertDialog.Builder build = new AlertDialog.Builder(this);
@@ -122,4 +188,15 @@ public class TeacherSelectActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void startProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+        listView.setAdapter(null);
+    }
+
+    public void endProgressBar(ArrayList<Period> periods){
+        progressBar.setVisibility(View.GONE);
+        populateListPeriods(periods);
+    }
+
 }

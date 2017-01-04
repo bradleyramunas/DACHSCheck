@@ -3,11 +3,8 @@ package com.bradleyramunas.dachscheck;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +12,6 @@ import android.widget.Toast;
 
 import com.bradleyramunas.dachscheck.Database.DBConnect;
 import com.bradleyramunas.dachscheck.Types.Period;
-import com.bradleyramunas.dachscheck.Types.Teacher;
-import com.bradleyramunas.dachscheck.WebScrape.GrabPeriods;
-import com.bradleyramunas.dachscheck.WebScrape.GrabTeachers;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -26,10 +20,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
