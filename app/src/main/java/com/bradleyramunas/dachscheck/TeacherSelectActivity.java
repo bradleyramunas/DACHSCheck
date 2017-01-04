@@ -3,6 +3,7 @@ package com.bradleyramunas.dachscheck;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -121,7 +122,9 @@ public class TeacherSelectActivity extends AppCompatActivity {
                 cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        activity.setResult(1);
+                        Intent i = new Intent();
+                        i.putExtra("selectedPeriod", item);
+                        activity.setResult(1, i);
                         activity.finish();
                     }
                 });
