@@ -1,18 +1,24 @@
 package com.bradleyramunas.dachscheck;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.BaseAdapter;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bradleyramunas.dachscheck.Database.DBConnect;
+import com.bradleyramunas.dachscheck.Tasks.AlarmReceiver;
 import com.bradleyramunas.dachscheck.Types.Period;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -23,6 +29,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +37,27 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private AccountHeader header;
     private Period currentlySelected = null;
+    private AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
+
+
+    public void setRepeatingAlarm(int hour, int minute){
+        alarmManager = (AlarmManager) this.getSystemService(this.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        Log.e("ALARM", ""+ hour + ":" + minute);
+        Log.e("ALARM", calendar.toString());
+        alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+    }
+
+    public void removeAlarm(){
+        if(alarmManager != null){
+            alarmManager.cancel(alarmIntent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             db.onFirstRun();
             editor.apply();
         }
+
 
         header = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -144,7 +173,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.set_check) {
-
+            SharedPreferences sp = getBaseContext().getSharedPreferences(getString(R.string.app_data_key), getBaseContext().MODE_PRIVATE);
+            final SharedPreferences.Editor editor = sp.edit();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                    editor.putInt("timeHour", i);
+                    editor.putInt("timeMinute", i1);
+                    editor.apply();
+                    setRepeatingAlarm(i, i1);
+                }
+            }, sp.getInt("timeHour", 8), sp.getInt("timeMinute", 0), true);
+            timePickerDialog.setTitle("Homework Check Time");
+            timePickerDialog.show();
         }
 
         return super.onOptionsItemSelected(item);

@@ -34,6 +34,10 @@ public class Period implements Parcelable {
         this.url = url;
     }
 
+    public String getPeriodURL(){
+        return url.replace("_class", "_assignment");
+    }
+
     @Override
     public String toString() {
         return "Period{" +
